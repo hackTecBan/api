@@ -16,7 +16,7 @@ router.get("/listar", (req, res) => {
         const tokenAcesso = `${token_type} ${access_token}`;
         requestApi.get(
           {
-            uri: `https://rs${id}.tecban-sandbox.o3bank.co.uk/open-banking/v2.3/branches`,
+            uri: `https://rs${id}.tecban-sandbox.o3bank.co.uk/open-banking/v2.3/atms`,
             key: fs.readFileSync(
               `./data/banco${id}/certificate/client_private_key.key`
             ),
@@ -38,12 +38,12 @@ router.get("/listar", (req, res) => {
             if (error) {
               res.json({
                 sucesso: false,
-                message: "Ocorreu um erro ao listar as agências.",
+                message: "Ocorreu um erro ao listar os ATMs.",
               });
             } else {
               res.json({
                 sucesso: true,
-                agencias: JSON.parse(body),
+                atms: JSON.parse(body),
               });
             }
           }

@@ -5,6 +5,7 @@ const router = express.Router();
 const auth = require("./controllers/auth");
 const banco = require("./controllers/banco");
 const agencias = require("./controllers/agencias");
+const atms = require("./controllers/atm");
 
 const app = express();
 const port = 3000;
@@ -19,7 +20,8 @@ app.listen(port, function () {
 
 app.use("/auth", auth);
 app.use("/banco", banco);
-app.use("/agencias", agencias);
+app.use("/agencia", agencias);
+app.use("/atm", atms);
 
 module.exports = router;
 
