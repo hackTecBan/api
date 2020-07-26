@@ -2,6 +2,9 @@ const request = require("request");
 const req = request.defaults();
 const fs = require("fs");
 const bancos = require("../helpers/bancos");
+const jwt = require("jsonwebtoken");
+
+const privateKeyJWT = "IJBuyfYTGFyitfTYFDtydfYIDFtdFRITUFtu";
 
 const tokenHelper = {
   getToken: async (bancoId, callback) => {
@@ -55,6 +58,22 @@ const tokenHelper = {
         token: null,
       });
     }
+  },
+
+  verifyJWT: (req, res, next) => {
+    const token = req.headers["x-access-token"];
+    if (!token)
+      return res
+        .status(401)
+        .json({ auth: false, message: "Por favor, informe o token." });
+    jwt.verify(token, privateKeyJWT, function (err, decoded) {
+      if (err)
+        return res
+          .status(401)
+          .json({ auth: false, message: "Erro ao autenticar o token." });
+      req.userId = decoded.id;
+      next();
+    });
   },
 };
 

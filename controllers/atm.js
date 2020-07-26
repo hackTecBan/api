@@ -6,7 +6,7 @@ const request = require("request");
 const requestApi = request.defaults();
 const fs = require("fs");
 
-router.get("/listar", (req, res) => {
+router.get("/listar", tokenHelper.verifyJWT, (req, res) => {
   const { id } = req.query;
 
   if (id && bancos.find((x) => x.id == id)) {
