@@ -2,17 +2,18 @@ const express = require("express");
 const router = express.Router();
 const mongoDB = require("mongodb").MongoClient;
 const jwt = require("jsonwebtoken");
-const sha1 = require("sha1");
+
+const userNameMongo = process.env.ME_CONFIG_MONGODB_ADMINUSERNAME;
+const passwordMongo = process.env.ME_CONFIG_MONGODB_ADMINPASSWORD;
+const port = 27017;
+const uriHost = `mongo:${port}/?authSource=admin`;
+const mongoDBConnectionString = `mongodb://${userNameMongo}:${passwordMongo}@${uriHost}`;
 
 const privateKeyJWT = "IJBuyfYTGFyitfTYFDtydfYIDFtdFRITUFtu";
 const expiresTimeJWT = 86400;
 
-const mongoDBConnectionString =
-  "mongodb://root:root@localhost:27017?retryWrites=true&w=majority";
-
 router.get("/login", async (req, res) => {
   const { email, password } = req.query;
-  const sha1Password = sha1(password);
 
   if (!email || !password) {
     res.json({
@@ -35,7 +36,7 @@ router.get("/login", async (req, res) => {
         message: "Usuário ou senha incorretos",
       });
     } else {
-      if (sha1Password == userDB.password) {
+      if (password == userDB.password) {
         const token = jwt.sign(userDB, privateKeyJWT, {
           expiresIn: expiresTimeJWT,
         });

@@ -65,12 +65,12 @@ const tokenHelper = {
     if (!token)
       return res
         .status(401)
-        .json({ auth: false, message: "Por favor, informe o token." });
+        .json({ sucesso: false, message: "Por favor, informe o token." });
     jwt.verify(token, privateKeyJWT, function (err, decoded) {
       if (err)
         return res
           .status(401)
-          .json({ auth: false, message: "Erro ao autenticar o token." });
+          .json({ sucesso: false, message: "Erro ao autenticar o token." });
       req.userId = decoded.id;
       next();
     });

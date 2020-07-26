@@ -32,6 +32,19 @@ services:
       - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
       - mongo-compose-network
+  api:
+    build: .
+    links:
+      - mongo
+    networks:
+      - mongo-compose-network
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
 
 networks:
   mongo-compose-network:
