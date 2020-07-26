@@ -4,9 +4,33 @@ const express = require("express");
 const router = express.Router();
 const request = require("request");
 const requestApi = request.defaults();
+const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const mongoDB = require("mongodb").MongoClient;
 
-router.get("/listar", tokenHelper.verifyJWT, (req, res) => {
+const userNameMongo = process.env.ME_CONFIG_MONGODB_ADMINUSERNAME;
+const passwordMongo = process.env.ME_CONFIG_MONGODB_ADMINPASSWORD;
+const port = 27017;
+const uriHost = `mongo:${port}/?authSource=admin`;
+const mongoDBConnectionString = `mongodb://${userNameMongo}:${passwordMongo}@${uriHost}`;
+
+router.get("/listar", tokenHelper.verifyJWT, async (req, res) => {
+  const token = req.headers["x-access-token"];
+  const privateKeyJWT = "IJBuyfYTGFyitfTYFDtydfYIDFtdFRITUFtu";
+  const user = jwt.verify(token, privateKeyJWT);
+  const client = await new mongoDB.connect(mongoDBConnectionString, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  const db = client.db("HackathonTecban");
+  const collection = db.collection("UserConsume");
+  collection.insertOne({
+    user: user,
+    request: "LISTAR_ATM",
+    horario: new Date().toLocaleString(),
+  });
+
   const { id } = req.query;
 
   if (id && bancos.find((x) => x.id == id)) {
